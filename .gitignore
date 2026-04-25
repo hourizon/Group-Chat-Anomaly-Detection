@@ -1,0 +1,22 @@
+# Executables
+*.exe
+
+# Object files
+*.o
+*.obj
+
+# Model data
+/bayes_classifier/data/*.dat
+
+# Log files
+*.log
+
+# IDE and editor files
+.vscode/
+.idea/
+
+# OS generated files
+# Windows
+Thumbs.db
+# macOS
+.DS_Store
