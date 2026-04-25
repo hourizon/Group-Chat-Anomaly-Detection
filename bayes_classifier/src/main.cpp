@@ -36,8 +36,7 @@ void createSampleData(const path& data_dir) {
 }
 
 int main(int argc, char* argv[]) {
-    path base_dir = "d:/Users/Lenovo/Desktop/d2l/bayes_classifier";
-    path data_dir = base_dir / "data";
+    path data_dir = "data";
 
     std::cout << "=== Naive Bayes Classifier Test ===" << std::endl;
 
