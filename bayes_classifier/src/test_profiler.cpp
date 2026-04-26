@@ -16,33 +16,22 @@ int main() {
 
     std::cout << "\n[1] Recording events..." << std::endl;
 
-    profiler.recordEvent("user001", "member_join", base_time);
-    profiler.recordEvent("user001", "member_join", base_time + 60000);
-    profiler.recordEvent("user001", "member_join", base_time + 120000);
-    profiler.recordEvent("user001", "member_join", base_time + 180000);
+    profiler.add_event(1, "member_join");
+    profiler.add_event(1, "member_join");
+    profiler.add_event(1, "member_join");
+    profiler.add_event(1, "member_join");
 
-    profiler.recordEvent("user002", "member_join", base_time + 300000);
+    profiler.add_event(2, "member_join");
 
     std::cout << "Events recorded." << std::endl;
 
-    std::cout << "\n[2] Checking event counts..." << std::endl;
+    std::cout << "\n[2] Testing anomaly detection..." << std::endl;
 
-    std::cout << "  user001 join events (1hr window): "
-             << profiler.getEventCount("user001", "member_join") << std::endl;
-    std::cout << "  user001 total events (1hr window): "
-             << profiler.getTotalEventCount("user001") << std::endl;
-    std::cout << "  user002 join events (1hr window): "
-             << profiler.getEventCount("user002", "member_join") << std::endl;
+    bool anomaly1 = profiler.is_abnormal(1, "member_join");
+    bool anomaly2 = profiler.is_abnormal(2, "member_join");
 
-    std::cout << "\n[3] Testing anomaly detection..." << std::endl;
-
-    bool anomaly1 = profiler.isAnomaly("user001", "member_join", 3);
-    bool anomaly2 = profiler.isAnomaly("user002", "member_join", 3);
-    bool anomaly3 = profiler.isRapidJoin("user001", 5, 600000);
-
-    std::cout << "  user001 join >= 3? " << (anomaly1 ? "YES" : "NO") << std::endl;
-    std::cout << "  user002 join >= 3? " << (anomaly2 ? "YES" : "NO") << std::endl;
-    std::cout << "  user001 rapid join >= 5? " << (anomaly3 ? "YES" : "NO") << std::endl;
+    std::cout << "  user001 is abnormal? " << (anomaly1 ? "YES" : "NO") << std::endl;
+    std::cout << "  user002 is abnormal? " << (anomaly2 ? "YES" : "NO") << std::endl;
 
     std::cout << "\n[4] Testing baseline analyzer..." << std::endl;
 

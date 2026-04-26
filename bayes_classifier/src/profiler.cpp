@@ -37,3 +37,39 @@ bool BehaviorProfiler::is_abnormal(long long user_id, const std::string& event_t
 }
 
 } // namespace profiler
+
+#include <numeric>
+#include <cmath>
+
+namespace profiler {
+
+BaselineAnalyzer::BaselineAnalyzer() : mean_(0.0), std_dev_(0.0), finalized_(false) {}
+
+void BaselineAnalyzer::addObservation(double value) {
+    if (!finalized_) {
+        observations_.push_back(value);
+    }
+}
+
+void BaselineAnalyzer::finalize() {
+    if (observations_.empty() || finalized_) return;
+
+    double sum = std::accumulate(observations_.begin(), observations_.end(), 0.0);
+    mean_ = sum / observations_.size();
+
+    double sq_sum = std::inner_product(observations_.begin(), observations_.end(), observations_.begin(), 0.0);
+    std_dev_ = std::sqrt(sq_sum / observations_.size() - mean_ * mean_);
+
+    finalized_ = true;
+}
+
+double BaselineAnalyzer::getThreshold(double num_std_dev) const {
+    return mean_ + num_std_dev * std_dev_;
+}
+
+bool BaselineAnalyzer::isAnomalous(double value, double num_std_dev) const {
+    if (!finalized_) return false;
+    return value > getThreshold(num_std_dev);
+}
+
+}
