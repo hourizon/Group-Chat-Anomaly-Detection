@@ -7,6 +7,10 @@ using namespace bayes;
 using namespace std::filesystem;
 
 void createSampleData(const path& data_dir) {
+    if (!exists(data_dir)) {
+        std::cout << "Creating data directory..." << std::endl;
+        create_directory(data_dir);
+    }
     path spam_path = data_dir / "spam.txt";
     path ham_path = data_dir / "ham.txt";
 
@@ -44,22 +48,15 @@ int main(int argc, char* argv[]) {
 
     std::cout << "\n[1] Training model..." << std::endl;
     Trainer trainer;
-    if (!trainer.train((data_dir / "spam.txt").string(), (data_dir / "ham.txt").string())) {
-        std::cerr << "Training failed!" << std::endl;
-        return 1;
-    }
+    trainer.train((data_dir / "spam.txt").string(), "spam");
+    trainer.train((data_dir / "ham.txt").string(), "ham");
     std::cout << "Training completed." << std::endl;
 
-    std::cout << "\n[2] Saving model..." << std::endl;
-    trainer.saveModel((data_dir / "bayes_model.dat").string());
-    std::cout << "Model saved." << std::endl;
+    std::cout << "\n[2] Creating classifier..." << std::endl;
+    Classifier classifier = trainer.getClassifier();
+    std::cout << "Classifier created." << std::endl;
 
-    std::cout << "\n[3] Loading model..." << std::endl;
-    Classifier classifier;
-    classifier.loadModel((data_dir / "bayes_model.dat").string());
-    std::cout << "Model loaded." << std::endl;
-
-    std::cout << "\n[4] Testing classification..." << std::endl;
+    std::cout << "\n[3] Testing classification..." << std::endl;
 
     std::vector<std::string> test_messages = {
         "click here for free money",
